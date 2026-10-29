@@ -2,11 +2,37 @@
 Custom exceptions for Coffee Shop Ordering System
 """
 
-class CoffeeShopError():
-    pass
+class CoffeeShopError(Exception):
+    """Base exception for all coffee shop errors."""
+    
+pass
 
 class OrderError(CoffeeShopError):
-    pass
+    """Base exception for order-related errors."""
+    
+pass
+
+class InvalidItemError(OrderError):
+    """Raised when item doesn't exist on menu."""
+    
+pass
+
+class InvalidCustomizationError(OrderError):
+    """Raised when customization not available."""
+    
+pass
 
 class PaymentError(CoffeeShopError):
-    pass
+    """Base exception for payment errors."""
+    
+pass
+
+class InsufficientPointsError(PaymentError):
+    """Raised when loyalty points insufficient for redemption."""
+    
+pass
+
+class InvalidDiscountError(PaymentError):
+    """Raised when discount can't be applied."""
+    
+pass

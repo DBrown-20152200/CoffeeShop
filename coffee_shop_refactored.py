@@ -1,13 +1,44 @@
 """
 Refactored Coffee Shop Ordering System
 """
+from coffee_shop_exceptions import *
 
 class MenuItem():
-    def __init__(self, name: str, size: str, milk: str, cream: bool):        
-        self._name = name
+    """All drinks on the menu"""
+    drinks_sizes = {"small":1.0,
+                   "medium":1.3,
+                   "large":1.6}
+
+    drinks_menu = {"latte":4.50,
+                    "cappucino":4.25,
+                    "esspresso":3.50,
+                    "americano":3.75,
+                    "mocha":5.00}
+
+    milk_prices = {"oat":0.50,
+                   "almond":0.50,
+                   "whole":0.00,
+                   "skim":0.00,
+                   "none":0.00}
+
+    def __init__(self, drink: str, size: str, milk: str):        
+        self._drink = drink
         self._size = size
         self._milk = milk
-        self._cream = cream
+
+        if drink not in self.drinks_menu:
+            raise InvalidItemError
+
+        if size not in self.drinks_sizes:
+            raise InvalidCustomizationError
+
+        if milk not in self.milk_prices:
+            raise InvalidCustomizationError
+
+    def calculate_price (menu_item: MenuItem):
+        menu_item._price = MenuItem.drinks_menu.get(menu_item._drink)
+        menu_item._price *= MenuItem.drinks_sizes.get(menu_item._size)
+        menu_item._price += MenuItem.milk_prices.get(menu_item._milk)
 
 class LoyaltyProgram():
     def __init__(self, account_number: int, points_total: int, phone_number: int, email: str):
@@ -19,7 +50,7 @@ class LoyaltyProgram():
 class Customer():
     def __init__(self, name: str, loyalty_account: LoyaltyProgram, staff_status: bool):
         self._name = name
-        self._loyalty_account = loyalty_account
+        self._loyalty_account = loyalty_account._account_number
         self._is_staff = staff_status
 
 class Payment():
