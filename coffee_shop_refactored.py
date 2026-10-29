@@ -25,6 +25,7 @@ class MenuItem():
         self._drink = drink
         self._size = size
         self._milk = milk
+        self._price = 0.00
 
         if drink not in self.drinks_menu:
             raise InvalidItemError
@@ -41,11 +42,26 @@ class MenuItem():
         menu_item._price += MenuItem.milk_prices.get(menu_item._milk)
 
 class LoyaltyProgram():
-    def __init__(self, account_number: int, points_total: int, phone_number: int, email: str):
+    loyalty_discount = 0.10
+    points_redeem_threshold = 100
+    
+    loyalty_account_list = {}
+
+    def __init__(self, account_number: int, phone_number: int, email: str):
         self._account_number = account_number
-        self._points_total = points_total
         self._phone_number = phone_number
         self._email = email
+        self._points_total = 0
+
+    def add_account(loyalty_account: LoyaltyProgram):
+        LoyaltyProgram.loyalty_account_list[loyalty_account._account_number] = loyalty_account
+
+    def points_balance (loyalty_account: LoyaltyProgram):
+        return loyalty_account._points_total
+
+    def redeem_free_drink(loyalty_account: LoyaltyProgram):
+        if loyalty_account.points_balance >= LoyaltyProgram.points_redeem_threshold:
+            loyalty_account._points_total -= 100
 
 class Customer():
     def __init__(self, name: str, loyalty_account: LoyaltyProgram, staff_status: bool):
