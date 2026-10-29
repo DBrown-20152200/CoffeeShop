@@ -8,40 +8,44 @@ class MenuItem():
 
     drinks_sizes = {"small":1.0,
                    "medium":1.3,
-                   "large":1.6}
+                   "large":1.6
+                   }
 
     drinks_menu = {"latte":4.50,
                     "cappucino":4.25,
                     "esspresso":3.50,
                     "americano":3.75,
-                    "mocha":5.00}
+                    "mocha":5.00
+                    }
 
     milk_prices = {"oat":0.50,
                    "almond":0.50,
                    "whole":0.00,
                    "skim":0.00,
-                   "none":0.00}
+                   "none":0.00
+                   }
 
-    def __init__(self, drink: str, size: str, milk: str):        
-        self._drink = drink
-        self._size = size
-        self._milk = milk
+    def __init__(self):        
+        self._drink = input("Drink: ").strip().lower()
+        self._size = input("Drink: ").strip().lower()
+        self._milk = input("Milk (whole/skim/oat/almond/none): ").strip().lower()
         self._price = 0.00
 
-        if drink not in self.drinks_menu:
+        if self._drink not in self.drinks_menu:
             raise InvalidItemError
 
-        if size not in self.drinks_sizes:
+        if self._size not in self.drinks_sizes:
             raise InvalidCustomizationError
 
-        if milk not in self.milk_prices:
+        if self._milk not in self.milk_prices:
             raise InvalidCustomizationError
 
-    def calculate_price (menu_item: MenuItem):
+    def calculate_price (self):
         """Calculates the item price after all selections are made."""
-        menu_item._price = MenuItem.drinks_menu.get(menu_item._drink)
-        menu_item._price *= MenuItem.drinks_sizes.get(menu_item._size)
-        menu_item._price += MenuItem.milk_prices.get(menu_item._milk)
+
+        self._price = MenuItem.drinks_menu.get(self._drink)
+        self._price *= MenuItem.drinks_sizes.get(self._size)
+        self._price += MenuItem.milk_prices.get(self._milk)
 
 class LoyaltyProgram():
     """Manages loyalty points and discounts."""
@@ -92,19 +96,24 @@ class Customer():
         else:
             customer._is_staff = False        
 
-
 class Payment():
     """Manages payment type and amount"""
 
-    def __init__(self, base_price: float, extras_price: float, total_price: float):
-        self._base_price = base_price
-        self._extras_price = extras_price
-        self._total_price = total_price
+    payment_type_list = ["cash",
+                         "card",
+                         "points",
+                         "staff discount"
+                        ]
 
-class CashPayment(Payment):
-    def __init__(self, base_price: float, extras_price: float, total_price: float, amount_paid: float):
-        super().__init__(base_price, extras_price, total_price)
-        self._amount_paid = amount_paid
+    def __init__(self, total_price: float, method: str, amount_paid: float):
+        self._total_price = total_price 
+        self._payment_method = method
+        self._payment_amount = amount_paid
+
+        if self._payment_method not in self.payment_type_list:
+            raise PaymentError
+        else:
+            self._total_price -= self._payment_amount
 
 class Order():
     def __init__(self, order_number: int, customer: Customer, item_list: list[MenuItem], payment: Payment):
