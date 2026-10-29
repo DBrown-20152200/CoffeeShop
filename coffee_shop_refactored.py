@@ -4,7 +4,8 @@ Refactored Coffee Shop Ordering System
 from coffee_shop_exceptions import *
 
 class MenuItem():
-    """All drinks on the menu"""
+    """A class of the drinks on the menu"""
+
     drinks_sizes = {"small":1.0,
                    "medium":1.3,
                    "large":1.6}
@@ -37,24 +38,32 @@ class MenuItem():
             raise InvalidCustomizationError
 
     def calculate_price (menu_item: MenuItem):
+        """Calculates the item price after all selections are made."""
         menu_item._price = MenuItem.drinks_menu.get(menu_item._drink)
         menu_item._price *= MenuItem.drinks_sizes.get(menu_item._size)
         menu_item._price += MenuItem.milk_prices.get(menu_item._milk)
 
 class LoyaltyProgram():
+    """Manages loyalty points and discounts."""
+
     loyalty_discount = 0.10
     points_redeem_threshold = 100
     
     loyalty_account_list = {}
 
-    def __init__(self, account_number: int, phone_number: int, email: str):
+    def __init__(self, account_number: int, name: str, phone_number: int, email: str):
         self._account_number = account_number
+        self._name = name
         self._phone_number = phone_number
         self._email = email
         self._points_total = 0
 
     def add_account(loyalty_account: LoyaltyProgram):
         LoyaltyProgram.loyalty_account_list[loyalty_account._account_number] = loyalty_account
+
+    def verify_account(loyalty_account: LoyaltyProgram):
+        if loyalty_account._account_number not in LoyaltyProgram.loyalty_account_list:
+            LoyaltyProgram.add_account(loyalty_account)
 
     def points_balance (loyalty_account: LoyaltyProgram):
         return loyalty_account._points_total
@@ -64,12 +73,29 @@ class LoyaltyProgram():
             loyalty_account._points_total -= 100
 
 class Customer():
-    def __init__(self, name: str, loyalty_account: LoyaltyProgram, staff_status: bool):
+    """Manages customer information"""
+
+    staff_list = []
+
+    def __init__(self, name: str):
         self._name = name
-        self._loyalty_account = loyalty_account._account_number
-        self._is_staff = staff_status
+        self._loyalty_account = None
+        self._is_staff = False
+
+    def enter_loyalty_account(self, loyalty_account: LoyaltyProgram):
+         LoyaltyProgram.verify_account(loyalty_account)
+         self._loyalty_account = loyalty_account
+
+    def verify_staff_member(customer: Customer):
+        if customer._name in Customer.staff_list:
+            customer._is_staff = True
+        else:
+            customer._is_staff = False        
+
 
 class Payment():
+    """Manages payment type and amount"""
+
     def __init__(self, base_price: float, extras_price: float, total_price: float):
         self._base_price = base_price
         self._extras_price = extras_price
