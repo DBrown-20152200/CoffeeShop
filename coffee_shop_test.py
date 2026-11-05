@@ -9,7 +9,11 @@ class TestCoffeeShop(unittest.TestCase):
             """Set up test fixtures."""
             
             self.latte = MenuItem("Latte", 4.50, ['small', 'medium', 'large'])
-                    
+            self.cappuccino = MenuItem("Cappuccino", 4.25, ['small', 'medium', 'large'])
+            self.espresso = MenuItem("Espresso", 3.50, ['small', 'medium', 'large'])
+            self.americano = MenuItem("Americano", 3.75, ['small', 'medium', 'large'])
+            self.mocha = MenuItem("Mocha", 5.00, ['small', 'medium', 'large'])
+
             self.customer = Customer("Alice", member=True)
                     
             self.loyalty = LoyaltyProgram()
@@ -18,9 +22,14 @@ class TestCoffeeShop(unittest.TestCase):
     def test_menu_item_pricing_small(self):
         """Test MenuItem calculates small drink price correctly."""
             
-        price = self.latte.calculate_price('small')
-                
-        self.assertEqual(price, 4.50)
+        self.latte.calculate_price('small')                
+        self.assertEqual(self.latte._price, 4.50)
+
+        self.espresso.calculate_price('small')
+        self.assertEqual(self.espresso._price, 3.50)
+
+        self.espresso.calculate_price('medium')
+        self.assertEqual(self.espresso._price, 4.55)
 
         
     def test_menu_item_pricing_invalid_size(self):
@@ -34,23 +43,21 @@ class TestCoffeeShop(unittest.TestCase):
     def test_order_total_with_multiple_items(self):
         """Test Order calculates total correctly."""
             
-    order = Order()
-            
-    # Add implementation
-            
-    # self.assertEqual(order.total(), expected_value)
+        order = Order()
+                
+        self.assertEqual(order._total_cost(), )
 
         
     def test_member_discount_applied(self):
         """Test member discount is 10%."""
             
-    # Add implementation
+        # Add implementation
 
         
     def test_loyalty_points_earned(self):
         """Test loyalty points: $1 = 1 point."""
             
-    # Add implementation
+        # Add implementation
 
         
     def test_redeem_points_insufficient(self):

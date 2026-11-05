@@ -8,9 +8,9 @@ class MenuItem():
 
     #dict of drink sizes and their price multipliers
     drinks_size_multiplier = {"small":1.0,
-                   "medium":1.3,
-                   "large":1.6
-                   }
+                            "medium":1.3,
+                            "large":1.6
+                            }
 
     def __init__(self, name: str, base_price: float, available_sizes: list):
         """Initialises MenuItem"""
@@ -18,6 +18,7 @@ class MenuItem():
         self._name = name
         self._base_price = base_price
         self._available_sizes = available_sizes
+        self._price = 0.00
 
     def calculate_price (self, size: str):
         """Calculates the item price after all selections are made."""
@@ -26,8 +27,6 @@ class MenuItem():
             self._price = self._base_price * self.drinks_size_multiplier.get(size)
         else:
             raise InvalidCustomizationError
-
-        return self._price
 
 class Customer():
     """Manages customer information"""
@@ -67,27 +66,6 @@ class LoyaltyProgram():
         if loyalty_account.points_balance >= LoyaltyProgram.points_redeem_threshold:
             loyalty_account._points_total -= 100
 
-      
-
-class Payment():
-    """Manages payment type and amount"""
-
-    payment_type_list = ["cash",
-                         "card",
-                         "points",
-                         "staff discount"
-                        ]
-
-    def __init__(self, total_price: float, method: str, amount_paid: float):
-        self._total_price = total_price 
-        self._payment_method = method
-        self._payment_amount = amount_paid
-
-        if self._payment_method not in self.payment_type_list:
-            raise PaymentError
-        else:
-            self._total_price -= self._payment_amount
-
 class Order():
     """Class for creating orders"""
 
@@ -103,21 +81,3 @@ class Order():
     def calculate_total_cost(self):
         for items in self._item_list:
             self._total_cost += items._price
-
-    def __str__(self):
-        return "Take Order"
-
-class StaffOrder(Order):
-    def __str__(self):
-        return "Staff order"
-
-class DailyReport():
-    def __str__(self):
-        return "Daily Report"
-
-def verify_input(input_message):
-    try:
-        input_message = int(input_message)
-        return input_message
-    except:
-        raise CoffeeShopError
