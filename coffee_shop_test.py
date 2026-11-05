@@ -14,7 +14,7 @@ class TestCoffeeShop(unittest.TestCase):
             self.americano = MenuItem("Americano", 3.75, ['small', 'medium', 'large'])
             self.mocha = MenuItem("Mocha", 5.00, ['small', 'medium', 'large'])
 
-            self.customer = Customer("Alice", member=True)
+            self.customer_alice = Customer("Alice", member=True)
                     
             self.loyalty = LoyaltyProgram()
 
@@ -36,16 +36,20 @@ class TestCoffeeShop(unittest.TestCase):
         """Test MenuItem raises exception for invalid size."""
             
         with self.assertRaises(InvalidCustomizationError):
-                    
             self.latte.calculate_price('extra-large')
 
         
     def test_order_total_with_multiple_items(self):
         """Test Order calculates total correctly."""
-            
+
         order = Order()
+
+        order.add_item(self.latte, "small")
+        order.add_item(self.mocha, "small")
+
+        order.calculate_total_cost()
                 
-        self.assertEqual(order._total_cost(), )
+        self.assertEqual(order._total_cost, 9.50)
 
         
     def test_member_discount_applied(self):

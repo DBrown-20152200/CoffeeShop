@@ -70,14 +70,13 @@ class Order():
     """Class for creating orders"""
 
     def __init__(self):
-        self._order_number = int()
-        self._item_list = []
-        self._payment = str()
-        self._total_cost = 0.00
+        self._item_list = {}
+        self._total_cost = float()
 
-    def add_item(self, item: MenuItem):
-        self._item_list.append(item)
+    def add_item(self, item: MenuItem, size: str):
+        item.calculate_price(size)
+        self._item_list[f"{size} {item._name}"] = item._price
 
     def calculate_total_cost(self):
-        for items in self._item_list:
-            self._total_cost += items._price
+        for item in self._item_list:
+            self._total_cost += float(self._item_list[item])
