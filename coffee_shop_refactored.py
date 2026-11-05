@@ -7,64 +7,25 @@ class MenuItem():
     """The items on the menu and their customisations"""
 
     #dict of drink sizes and their price multipliers
-    drinks_sizes = {"small":1.0,
+    drinks_size_multiplier = {"small":1.0,
                    "medium":1.3,
                    "large":1.6
                    }
 
-    #list of the drink sizes as strings
-    available_sizes = []
-    for key in drinks_sizes:
-        available_sizes.append(key)
-
-    #list of drinks on the menu and their prices
-    drinks_menu = {"latte":4.50,
-                    "cappucino":4.25,
-                    "esspresso":3.50,
-                    "americano":3.75,
-                    "mocha":5.00
-                    }
-
-    #user friendly version of drinks_menu
-    drinks_menu_priced = drinks_menu
-    for item in drinks_menu:
-        drinks_menu_priced[item] = f"${drinks_menu[item]}"
-
-    #list of milks and their prices
-    milk_prices = {"oat":0.50,
-                   "almond":0.50,
-                   "whole":0.00,
-                   "skim":0.00,
-                   "none":0.00
-                   }
-
-    def __init__(self):
+    def __init__(self, name: str, base_price: float, available_sizes: list):
         """Initialises MenuItem"""
 
-        #lets customer choose a drink from the menu
-        print(f"\n Drinks Menu: {MenuItem.drinks_menu}")
-        self._drink = input("Drink selection: ").strip().lower()
-        if self._drink not in MenuItem.drinks_menu:
-            raise InvalidItemError
+        self._name = name
+        self._base_price = base_price
+        self._available_sizes = available_sizes
 
-        #lets customer choose drink size
-        print(f"Available sizes: {"/".join(self.available_sizes)}")
-        self._size = input("Select drink size: ").strip().lower()
-        if self._size not in MenuItem.drinks_sizes:
-            raise InvalidCustomizationError
-
-        #lets customer customise milk choice
-        print(f"Available milk choices: {MenuItem.milk_prices}")
-        self._milk = input("Select milk choice: ").strip().lower()
-
-        self._price = 0.00
-
-    def calculate_price (self):
+    def calculate_price (self, size: str):
         """Calculates the item price after all selections are made."""
 
-        self._price = (self.drinks_menu.get(self._drink) * 
-                        self.drinks_sizes.get(self._size) +
-                        self.milk_prices.get(self._milk))
+        if size in self._available_sizes:
+            self._price = self._base_price * self.drinks_size_multiplier.get(size)
+        else:
+            raise InvalidCustomizationError
 
 class LoyaltyProgram():
     """Manages loyalty points and discounts."""
@@ -74,9 +35,7 @@ class LoyaltyProgram():
     
     loyalty_account_list = {}
 
-    def __init__(self, name: str):
-
-        self._name = name
+    def __init__(self):
         self._points_total = 0
 
     def __str__(self):
@@ -141,7 +100,7 @@ class Order():
 
     def __init__(self):
         self._order_number = int()
-        self._customer = str()
+        self._customer = Customer()
         self._item_list = []
         self._payment = str()
         self._total_cost = 0.00
@@ -170,30 +129,3 @@ def verify_input(input_message):
         return input_message
     except:
         raise CoffeeShopError
-        
-def main_menu():
-    """Displays the main menu to allow function selection"""
-
-    main_menu_options = {1:Order(),
-                         2:StaffOrder(),
-                         3:DailyReport(),
-                         4:LoyaltyProgram(),
-                         5:"Reset Daily Counters",
-                         6:"Exit"}
-
-    print("\n======= Coffee Shop POS =======\n")
-
-    for key in main_menu_options:
-        print(f"\n{key}:{main_menu_options[key]}")
-    print("\n===============================")
-
-    choice = verify_input(input("Choice: ").strip())
-
-    #creates objects based on user input
-    if choice in main_menu_options:
-        choice = main_menu_options[choice]
-    else:
-        raise CoffeeShopError
-
-if __name__ == "__main__":
-    main_menu()
