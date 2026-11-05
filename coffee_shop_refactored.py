@@ -46,11 +46,11 @@ class LoyaltyProgram():
         if customer._is_member == True:
             self._account_list[customer._name] = starting_points
 
-    def apply_member_discount(self, cart: list):
+    def apply_member_discount(self, cart: dict):
         """Applies the 10% member discount to loyalty members."""
 
         for item in cart:
-            cart[item] *= 0.1
+            cart[item] *= 0.9
         return cart
 
     def earn_points(self, member_name: str, purchase_cost: float):
@@ -75,9 +75,10 @@ class LoyaltyProgram():
 class Order():
     """Class for creating orders"""
 
-    def __init__(self):
+    def __init__(self, customer:Customer):
         self._item_list = {}
         self._total_cost = float()
+        self._customer = customer
 
     def add_item(self, item: MenuItem, size: str):
         """Adds item and its cost to a cart."""
@@ -89,4 +90,4 @@ class Order():
         """Calculates total cost of the order."""
 
         for item in self._item_list:
-            self._total_cost += float(self._item_list[item])
+            self._total_cost += (self._item_list.get(item))

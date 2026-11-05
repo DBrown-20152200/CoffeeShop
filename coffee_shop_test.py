@@ -14,11 +14,12 @@ class TestCoffeeShop(unittest.TestCase):
             self.americano = MenuItem("Americano", 3.75, ['small', 'medium', 'large'])
             self.mocha = MenuItem("Mocha", 5.00, ['small', 'medium', 'large'])
 
-            self.alice = Customer("Alice", member=True)
+            self.customer_member = Customer("Alice", member=True)
+            self.customer_non_member = Customer("Bob", member=False)
                     
             self.loyalty = LoyaltyProgram()
 
-            self.loyalty.add_member(self.alice, 0)
+            self.loyalty.add_member(self.customer_member, 0)
 
         
     def test_menu_item_pricing_small(self):
@@ -44,7 +45,7 @@ class TestCoffeeShop(unittest.TestCase):
     def test_order_total_with_multiple_items(self):
         """Test Order calculates total correctly."""
 
-        order = Order()
+        order = Order(self.customer_non_member)
 
         order.add_item(self.latte, "small")
         order.add_item(self.mocha, "small")
@@ -57,22 +58,23 @@ class TestCoffeeShop(unittest.TestCase):
     def test_member_discount_applied(self):
         """Test member discount is 10%."""
             
-        order = Order()
+        order = Order(self.customer_member)
         order.add_item(self.mocha, "small")
 
+        order._item_list = self.loyalty.apply_member_discount(order._item_list)
         order.calculate_total_cost()
 
-        self.assertEqual(order._total_cost, 4.50) 
+        self.assertEqual(order._total_cost, 4.50)
         
     def test_loyalty_points_earned(self):
         """Test loyalty points: $1 = 1 point."""
             
-        order = Order()
+        order = Order(self.customer_member)
         order.add_item(self.mocha, "small")
 
         order.calculate_total_cost()
-        self.loyalty.earn_points(self.alice._name, order._total_cost)
-        points_earned = self.loyalty._account_list[self.alice._name]
+        self.loyalty.earn_points(self.customer_member._name, order._total_cost)
+        points_earned = self.loyalty._account_list[self.customer_member._name]
 
         self.assertEqual(points_earned, 5)
 
@@ -81,8 +83,7 @@ class TestCoffeeShop(unittest.TestCase):
         """Test redeeming with insufficient points raises exception."""
             
         with self.assertRaises(InsufficientPointsError):
-                
-            self.loyalty.redeem_points(self.alice._name, points_to_redeem=100)
+            self.loyalty.redeem_points(self.customer_member._name, points_to_redeem=100)
 
     
 # Add more tests as needed
