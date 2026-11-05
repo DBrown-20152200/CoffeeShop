@@ -27,6 +27,17 @@ class MenuItem():
         else:
             raise InvalidCustomizationError
 
+        return self._price
+
+class Customer():
+    """Manages customer information"""
+
+    staff_list = []
+
+    def __init__(self, name: str, member: bool = False):
+        self._name = name
+        self._is_member = member
+
 class LoyaltyProgram():
     """Manages loyalty points and discounts."""
 
@@ -56,25 +67,7 @@ class LoyaltyProgram():
         if loyalty_account.points_balance >= LoyaltyProgram.points_redeem_threshold:
             loyalty_account._points_total -= 100
 
-class Customer():
-    """Manages customer information"""
-
-    staff_list = []
-
-    def __init__(self, name: str):
-        self._name = name
-        self._loyalty_account = None
-        self._is_staff = False
-
-    def enter_loyalty_account(self, loyalty_account: LoyaltyProgram):
-        LoyaltyProgram.verify_account(loyalty_account)
-        self._loyalty_account = loyalty_account
-
-    def verify_staff_member(customer: Customer):
-        if customer._name in Customer.staff_list:
-            customer._is_staff = True
-        else:
-            customer._is_staff = False        
+      
 
 class Payment():
     """Manages payment type and amount"""
@@ -100,7 +93,6 @@ class Order():
 
     def __init__(self):
         self._order_number = int()
-        self._customer = Customer()
         self._item_list = []
         self._payment = str()
         self._total_cost = 0.00
