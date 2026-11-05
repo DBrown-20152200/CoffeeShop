@@ -4,7 +4,7 @@ Refactored Coffee Shop Ordering System
 from coffee_shop_exceptions import *
 
 class MenuItem():
-    """The items on the menu and their customisations"""
+    """The items on the menu and their customisations."""
 
     #dict of drink sizes and their price multipliers
     drinks_size_multiplier = {"small":1.0,
@@ -13,7 +13,6 @@ class MenuItem():
                             }
 
     def __init__(self, name: str, base_price: float, available_sizes: list):
-        """Initialises MenuItem"""
 
         self._name = name
         self._base_price = base_price
@@ -29,42 +28,49 @@ class MenuItem():
             raise InvalidCustomizationError
 
 class Customer():
-    """Manages customer information"""
-
-    staff_list = []
+    """Manages customer information."""
 
     def __init__(self, name: str, member: bool = False):
         self._name = name
         self._is_member = member
 
 class LoyaltyProgram():
-    """Manages loyalty points and discounts."""
-
-    loyalty_discount = 0.10
-    points_redeem_threshold = 100
-    
-    loyalty_account_list = {}
+    """Manages loyalty points, discounts and redeeming logic."""
 
     def __init__(self):
-        self._points_total = 0
+        self._account_list = {}
 
-    def __str__(self):
-        return "View Loyalty Accounts"
+    def add_member(self, customer: Customer, starting_points: int):
+        """Adds a new member to the list and starts their points at 0"""
 
-    def add_account(loyalty_account: LoyaltyProgram):
-        LoyaltyProgram.loyalty_account_list[
-            loyalty_account._account_number] = loyalty_account
+        if customer._is_member == True:
+            self._account_list[customer._name] = starting_points
 
-    def verify_account(loyalty_account: LoyaltyProgram):
-        if loyalty_account._account_number not in LoyaltyProgram.loyalty_account_list:
-            LoyaltyProgram.add_account(loyalty_account)
+    def apply_member_discount(self, cart: list):
+        """Applies the 10% member discount to loyalty members."""
 
-    def points_balance (loyalty_account: LoyaltyProgram):
-        return loyalty_account._points_total
+        for item in cart:
+            cart[item] *= 0.1
+        return cart
 
-    def redeem_free_drink(loyalty_account: LoyaltyProgram):
-        if loyalty_account.points_balance >= LoyaltyProgram.points_redeem_threshold:
-            loyalty_account._points_total -= 100
+    def earn_points(self, member_name: str, purchase_cost: float):
+        """assigns 1 point for every $1 spent"""
+
+        points_earned = round(purchase_cost)
+        self._account_list[member_name] = points_earned
+
+    def redeem_points(self, member_name: str, points_to_redeem: int):
+        """Checks if member is eligible for a free small drink."""
+
+        if self._account_list[member_name] >= points_to_redeem:
+
+            self._account_list[member_name] -= points_to_redeem
+            total_cost = 0.00
+
+            return total_cost
+        else:
+            raise InsufficientPointsError
+        
 
 class Order():
     """Class for creating orders"""
@@ -74,9 +80,13 @@ class Order():
         self._total_cost = float()
 
     def add_item(self, item: MenuItem, size: str):
+        """Adds item and its cost to a cart."""
+
         item.calculate_price(size)
         self._item_list[f"{size} {item._name}"] = item._price
 
     def calculate_total_cost(self):
+        """Calculates total cost of the order."""
+
         for item in self._item_list:
             self._total_cost += float(self._item_list[item])
