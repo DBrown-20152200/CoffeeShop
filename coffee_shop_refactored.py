@@ -4,7 +4,7 @@ Refactored Coffee Shop Ordering System
 from coffee_shop_exceptions import *
 
 class MenuItem():
-    """A class of the drinks on the menu"""
+    """The items on the menu and their customisations"""
 
     drinks_sizes = {"small":1.0,
                    "medium":1.3,
@@ -25,10 +25,11 @@ class MenuItem():
                    "none":0.00
                    }
 
-    def __init__(self):        
-        self._drink = input("Drink: ").strip().lower()
-        self._size = input("Drink: ").strip().lower()
-        self._milk = input("Milk (whole/skim/oat/almond/none): ").strip().lower()
+    def __init__(self, drink_name: str, drink_size: str, milk: str):
+
+        self._drink = drink_name
+        self._size = drink_size
+        self._milk = milk
         self._price = 0.00
 
         if self._drink not in self.drinks_menu:
@@ -43,9 +44,9 @@ class MenuItem():
     def calculate_price (self):
         """Calculates the item price after all selections are made."""
 
-        self._price = MenuItem.drinks_menu.get(self._drink)
-        self._price *= MenuItem.drinks_sizes.get(self._size)
-        self._price += MenuItem.milk_prices.get(self._milk)
+        self._price = (self.drinks_menu.get(self._drink) * 
+                               self.drinks_sizes.get(self._size) +
+                               self.milk_prices.get(self._milk))
 
 class LoyaltyProgram():
     """Manages loyalty points and discounts."""
@@ -116,8 +117,14 @@ class Payment():
             self._total_price -= self._payment_amount
 
 class Order():
-    def __init__(self, order_number: int, customer: Customer, item_list: list[MenuItem], payment: Payment):
+    def __init__(self, order_number: int, customer: Customer, payment: Payment):
         self._order_number = order_number
         self._customer = customer
-        self._item_list = item_list
+        self._item_list = []
         self._payment = payment
+
+def main_menu():
+    pass
+
+if __name__ == "__main__":
+    pass
