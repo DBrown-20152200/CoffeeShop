@@ -12,7 +12,7 @@ class MenuItem():
                    "large":1.6
                    }
 
-    #A list of the drink sizes as strings
+    #list of the drink sizes as strings
     available_sizes = []
     for key in drinks_sizes:
         available_sizes.append(key)
@@ -25,7 +25,7 @@ class MenuItem():
                     "mocha":5.00
                     }
 
-    #User friendly version of drinks_menu
+    #user friendly version of drinks_menu
     drinks_menu_priced = drinks_menu
     for item in drinks_menu:
         drinks_menu_priced[item] = f"${drinks_menu[item]}"
@@ -39,20 +39,21 @@ class MenuItem():
                    }
 
     def __init__(self):
+        """Initialises MenuItem"""
 
-        #Lets customer choose a drink from the menu
+        #lets customer choose a drink from the menu
         print(f"\n Drinks Menu: {MenuItem.drinks_menu}")
         self._drink = input("Drink selection: ").strip().lower()
         if self._drink not in MenuItem.drinks_menu:
             raise InvalidItemError
 
-        #Lets customer choose drink size
+        #lets customer choose drink size
         print(f"Available sizes: {"/".join(self.available_sizes)}")
         self._size = input("Select drink size: ").strip().lower()
         if self._size not in MenuItem.drinks_sizes:
             raise InvalidCustomizationError
 
-        #Lets customer customise milk choice
+        #lets customer customise milk choice
         print(f"Available milk choices: {MenuItem.milk_prices}")
         self._milk = input("Select milk choice: ").strip().lower()
 
@@ -73,14 +74,13 @@ class LoyaltyProgram():
     
     loyalty_account_list = {}
 
-    def __init__(self, account_number: int, name: str, 
-                 phone_number: int, email: str):
+    def __init__(self, name: str):
 
-        self._account_number = account_number
         self._name = name
-        self._phone_number = phone_number
-        self._email = email
         self._points_total = 0
+
+    def __str__(self):
+        return "View Loyalty Accounts"
 
     def add_account(loyalty_account: LoyaltyProgram):
         LoyaltyProgram.loyalty_account_list[
@@ -137,40 +137,63 @@ class Payment():
             self._total_price -= self._payment_amount
 
 class Order():
-    def __init__(self, order_number: int, customer: Customer, payment: Payment):
-        self._order_number = order_number
-        self._customer = customer
+    """Class for creating orders"""
+
+    def __init__(self):
+        self._order_number = int()
+        self._customer = str()
         self._item_list = []
-        self._payment = payment
+        self._payment = str()
         self._total_cost = 0.00
 
-        def add_item(self, item: MenuItem):
-            self._item_list.append(item)
+    def add_item(self, item: MenuItem):
+        self._item_list.append(item)
 
-        def calculate_total_cost(self):
-            for items in self._item_list:
-                self._total_cost += items._price
+    def calculate_total_cost(self):
+        for items in self._item_list:
+            self._total_cost += items._price
+
+    def __str__(self):
+        return "Take Order"
 
 class StaffOrder(Order):
-    pass
+    def __str__(self):
+        return "Staff order"
 
 class DailyReport():
-    pass
+    def __str__(self):
+        return "Daily Report"
 
+def verify_input(input_message):
+    try:
+        input_message = int(input_message)
+        return input_message
+    except:
+        raise CoffeeShopError
+        
 def main_menu():
+    """Displays the main menu to allow function selection"""
 
-    main_menu_options = {1:"Take Order",
-                         2:"Staff Order",
-                         3:"Daily Report",
-                         4:"View Loyalty Accounts",
+    main_menu_options = {1:Order(),
+                         2:StaffOrder(),
+                         3:DailyReport(),
+                         4:LoyaltyProgram(),
                          5:"Reset Daily Counters",
                          6:"Exit"}
 
     print("\n======= Coffee Shop POS =======\n")
+
     for key in main_menu_options:
         print(f"\n{key}:{main_menu_options[key]}")
     print("\n===============================")
 
-    
+    choice = verify_input(input("Choice: ").strip())
+
+    #creates objects based on user input
+    if choice in main_menu_options:
+        choice = main_menu_options[choice]
+    else:
+        raise CoffeeShopError
+
 if __name__ == "__main__":
     main_menu()
